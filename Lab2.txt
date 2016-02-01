@@ -1,0 +1,132 @@
+1)
+SELECT
+employee_id,
+last_name,
+salary
+FROM employees
+WHERE salary BETWEEN 8000 AND 15000
+ORDER BY salary DESC,
+last_name ASC;
+
+EMPLOYEE_ID LAST_NAME                     SALARY                                
+----------- ------------------------- ----------                                
+        201 Hartstein                      13000                                
+        205 Higgins                        12000                                
+        174 Abel                           11000                                
+        149 Zlotkey                        10500                                
+        103 Hunold                          9000                                
+        176 Taylor                          8600                                
+        206 Gietz                           8300                                
+
+7 rows selected.
+
+2)
+SELECT
+employee_id,
+last_name,
+salary
+FROM employees
+WHERE salary BETWEEN 8000 AND 15000
+AND (job_id='IT_PROG' OR job_id='SA_REP')
+ORDER BY salary DESC, last_name ASC
+
+EMPLOYEE_ID LAST_NAME                     SALARY                                
+----------- ------------------------- ----------                                
+        174 Abel                           11000                                
+        103 Hunold                          9000                                
+        176 Taylor                          8600                                
+
+3 rows selected.
+
+3)
+SELECT
+employee_id,
+last_name,
+salary
+FROM employees
+WHERE (job_id='IT_PROG' OR job_id='SA_REP')
+AND salary NOT BETWEEN 8000 AND 15000
+ORDER BY
+salary DESC,last_name ASC
+
+EMPLOYEE_ID LAST_NAME                     SALARY                                
+----------- ------------------------- ----------                                
+        178 Grant                           7000                                
+        104 Ernst                           6000                                
+        107 Lorentz                         4200                                
+
+3 rows selected.
+
+4)
+SELECT
+last_name,
+job_id,
+salary
+FROM employees
+WHERE hire_date<'01-JAN-98'
+ORDER BY hire_date DESC
+
+LAST_NAME                 JOB_ID         SALARY                                 
+------------------------- ---------- ----------                                 
+Fay                       MK_REP           6000                                 
+Davies                    ST_CLERK         3100                                 
+Abel                      SA_REP          11000                                 
+Hartstein                 MK_MAN          13000                                 
+Rajs                      ST_CLERK         3500                                 
+Gietz                     AC_ACCOUNT       8300                                 
+Higgins                   AC_MGR          12000                                 
+De Haan                   AD_VP           17000                                 
+Ernst                     IT_PROG          6000                                 
+Hunold                    IT_PROG          9000                                 
+Kochhar                   AD_VP           17000                                 
+Whalen                    AD_ASST          4400                                 
+King                      AD_PRES         24000                                 
+
+13 rows selected.
+
+5)
+SELECT
+last_name,
+job_id,
+salary
+FROM employees
+WHERE hire_date<'01-JAN-99'
+AND salary>10000
+ORDER BY job_id ASC, salary DESC
+
+LAST_NAME                 JOB_ID         SALARY                                 
+------------------------- ---------- ----------                                 
+Higgins                   AC_MGR          12000                                 
+King                      AD_PRES         24000                                 
+Kochhar                   AD_VP           17000                                 
+De Haan                   AD_VP           17000                                 
+Hartstein                 MK_MAN          13000                                 
+Abel                      SA_REP          11000                                 
+
+6 rows selected.
+
+6)
+SELECT
+job_id,
+first_name || ' ' || last_name "Full name"
+FROM employees
+WHERE UPPER(first_name) LIKE '%E%'
+
+JOB_ID     Full name                                                            
+---------- ----------------------------------------------                       
+AC_MGR     Shelley Higgins                                                      
+AD_ASST    Jennifer Whalen                                                      
+AD_PRES    Steven King                                                          
+AD_VP      Neena Kochhar                                                        
+AD_VP      Lex De Haan                                                          
+IT_PROG    Alexander Hunold                                                     
+IT_PROG    Bruce Ernst                                                          
+MK_MAN     Michael Hartstein                                                    
+SA_MAN     Eleni Zlotkey                                                        
+SA_REP     Ellen Abel                                                           
+SA_REP     Kimberely Grant                                                      
+ST_CLERK   Trenna Rajs                                                          
+ST_CLERK   Peter Vargas                                                         
+ST_MAN     Kevin Mourgos                                                        
+
+14 rows selected.

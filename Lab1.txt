@@ -1,0 +1,60 @@
+...
+
+
+
+1.	False
+
+2.	True
+
+3.	False
+
+4.	Last name
+	No quotes around Emp Comm
+	Comma before FROM
+
+5.
+SQL> SELECT
+  2  location_id "City#",
+  3  city "City",
+  4  CASE WHEN state_province IS NULL THEN
+  5  'IN THE ' || country_id
+  6  ELSE state_province || ' IN THE ' || country_id
+  7  END AS "Province with Countyr Code"
+  8  FROM locations
+  9  WHERE location_id <= 1500
+ 10  ;
+
+     City# City                           Province with Countyr Code            
+---------- ------------------------------ -----------------------------------   
+      1000 Roma                           IN THE IT                             
+      1100 Venice                         IN THE IT                             
+      1200 Tokyo                          Tokyo Prefecture IN THE JP            
+      1300 Hiroshima                      IN THE JP                             
+      1400 Southlake                      Texas IN THE US                       
+      1500 South San Francisco            California IN THE US                  
+
+6 rows selected.
+
+6.
+SQL> SELECT DISTINCT
+  2  department_id,
+  3  job_id
+  4  FROM employees;
+
+DEPARTMENT_ID JOB_ID                                                            
+------------- ----------                                                        
+          110 AC_ACCOUNT                                                        
+           90 AD_VP                                                             
+           50 ST_CLERK                                                          
+           80 SA_REP                                                            
+           50 ST_MAN                                                            
+           80 SA_MAN                                                            
+          110 AC_MGR                                                            
+           90 AD_PRES                                                           
+           60 IT_PROG                                                           
+           20 MK_MAN                                                            
+              SA_REP                                                            
+           10 AD_ASST                                                           
+           20 MK_REP                                                            
+
+13 rows selected.
