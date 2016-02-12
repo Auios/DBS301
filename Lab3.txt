@@ -1,0 +1,112 @@
+1)
+SELECT to_char(sysdate+1,'Monthddth "of year" YYYY') FROM dual
+
+Tomorrow
+--------------------------
+February 03rd of year 2016
+
+1 row selected.
+
+2)
+SELECT
+last_name,
+first_name,
+salary,salary*1.07 "Good Salary",
+((salary*1.07)-salary)*12 "Annual Pay Increase"
+FROM employees
+WHERE department_id IN(20,50,60)
+
+LAST_NAME                 FIRST_NAME               SALARY Good Salary Annual Pay Increase                                                                                                               
+------------------------- -------------------- ---------- ----------- -------------------                                                                                                               
+Hartstein                 Michael                   13000       13910               10920                                                                                                               
+Fay                       Pat                        6000        6420                5040                                                                                                               
+Mourgos                   Kevin                      5800        6206                4872                                                                                                               
+Rajs                      Trenna                     3500        3745                2940                                                                                                               
+Davies                    Curtis                     3100        3317                2604                                                                                                               
+Matos                     Randall                    2600        2782                2184                                                                                                               
+Vargas                    Peter                      2500        2675                2100                                                                                                               
+Hunold                    Alexander                  9000        9630                7560                                                                                                               
+Ernst                     Bruce                      6000        6420                5040                                                                                                               
+Lorentz                   Diana                      4200        4494                3528                                                                                                               
+
+10 rows selected.
+
+3)
+SELECT
+CASE UPPER(job_id)
+WHEN 'ST_CLERK' THEN
+UPPER(last_name) || ', ' || UPPER(first_name) || ' is Store Clerk'
+WHEN 'ST_MAN' THEN
+UPPER(last_name) || ', ' || UPPER(first_name) || ' is Store Manager'
+END AS "Person and Job"
+FROM employees
+WHERE
+UPPER(last_name) LIKE '%S' AND (UPPER(first_name) LIKE '%C%' OR UPPER(first_name) LIKE '%K%')
+ORDER BY last_name                                                                                                                                                                            
+
+Person and Job                                                                                                                                                                                          
+----------------------------------------------------------------                                                                                                                                        
+DAVIES, CURTIS is Store Clerk                                                                                                                                                                           
+MOURGOS, KEVIN is Store Manager                                                                                                                                                                         
+
+2 rows selected.
+
+4)
+SELECT
+last_name,
+hire_date,
+ROUND(TO_NUMBER(sysdate-hire_date)/365) AS "Years worked"
+FROM employees
+WHERE hire_date < '01-JAN-1992'
+ORDER BY ROUND(TO_NUMBER(sysdate-hire_date)/365) DESC
+
+LAST_NAME                 HIRE_DATE Years worked                                                                                                                                                        
+------------------------- --------- ------------                                                                                                                                                        
+King                      17-JUN-87           29                                                                                                                                                        
+Whalen                    17-SEP-87           28                                                                                                                                                        
+Kochhar                   21-SEP-89           26                                                                                                                                                        
+Hunold                    03-JAN-90           26                                                                                                                                                        
+Ernst                     21-MAY-91           25                                                                                                                                                        
+
+5 rows selected.
+
+5)
+SELECT
+city,
+country_id,
+CASE WHEN state_province IS NULL THEN 'Unknown Province'
+ELSE state_province
+END AS "Province"
+FROM locations
+WHERE UPPER(city) LIKE 'S%' AND LENGTH(city) >= 8
+
+CITY                           CO Province                                                                                                                                                              
+------------------------------ -- -------------------------                                                                                                                                             
+Southlake                      US Texas                                                                                                                                                                 
+South San Francisco            US California                                                                                                                                                            
+South Brunswick                US New Jersey                                                                                                                                                            
+Singapore                      SG Unknown Province                                                                                                                                                      
+Stretford                      UK Manchester                                                                                                                                                            
+Sao Paulo                      BR Sao Paulo                                                                                                                                                             
+
+6 rows selected.
+
+6)
+SELECT
+last_name,
+hire_date,
+to_char(next_day(add_months(hire_date,12),'Tuesday'),'fmDAY, Month "the" fmDdspth "of year" YYYY') AS "Review Day"
+FROM employees
+WHERE hire_date > '01-JAN-98'
+
+LAST_NAME                 HIRE_DATE Review Day                                                                                                                                                          
+------------------------- --------- ----------------------------------------------------                                                                                                                
+Lorentz                   07-FEB-99 TUESDAY, February the Eighth of year 2000                                                                                                                           
+Mourgos                   16-NOV-99 TUESDAY, November the Twenty-First of year 2000                                                                                                                     
+Matos                     15-MAR-98 TUESDAY, March the Sixteenth of year 1999                                                                                                                           
+Vargas                    09-JUL-98 TUESDAY, July the Thirteenth of year 1999                                                                                                                           
+Zlotkey                   29-JAN-00 TUESDAY, January the Thirtieth of year 2001                                                                                                                         
+Taylor                    24-MAR-98 TUESDAY, March the Thirtieth of year 1999                                                                                                                           
+Grant                     24-MAY-99 TUESDAY, May the Thirtieth of year 2000                                                                                                                             
+
+7 rows selected.

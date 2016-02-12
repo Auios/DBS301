@@ -1,0 +1,106 @@
+1)
+SELECT AVG(salary)-MIN(salary) "Real Amount"
+FROM employees
+
+Real Amount
+-----------
+       6275
+
+1 row selected.
+
+2)
+SELECT
+department_id "ID",
+MAX(salary) "High",
+MIN(salary) "Low",
+ROUND(AVG(salary)) "Avg"
+FROM employees
+WHERE department_id IS NOT NULL
+GROUP BY department_id
+HAVING 
+ORDER BY 4 DESC
+
+        ID       High        Low        Avg
+---------- ---------- ---------- ----------
+        90      24000      17000      19333
+       110      12000       8300      10150
+        80      11000       8600      10033
+        20      13000       6000       9500
+        60       9000       4200       6400
+        10       4400       4400       4400
+        50       5800       2500       3500
+
+7 rows selected.
+
+3)
+SELECT
+department_id "Dept#",
+job_id "Job",
+COUNT(department_id) "HowMany"
+FROM employees
+GROUP BY department_id, job_id
+HAVING COUNT(department_id) > 1
+ORDER BY 3 DESC
+
+     Dept# Job           HowMany
+---------- ---------- ----------
+        50 ST_CLERK            4
+        60 IT_PROG             3
+        80 SA_REP              2
+        90 AD_VP               2
+
+4 rows selected.
+
+4)
+SELECT
+job_id "Job",
+ROUND(AVG(salary)) "Avg"
+FROM employees
+WHERE NOT UPPER(job_id) LIKE '%PRES%' AND NOT UPPER(job_id) LIKE '%VP%'
+GROUP BY job_id
+HAVING SUM(salary) >= 15000
+ORDER BY 2 DESC
+
+Job               Avg
+---------- ----------
+SA_REP           8867
+IT_PROG          6400
+
+2 rows selected.
+
+5)
+SELECT
+manager_id,
+COUNT(manager_id)
+FROM employees
+WHERE manager_id NOT IN (100,101,102)
+GROUP BY manager_id
+HAVING COUNT(manager_id) > 2
+ORDER BY 2 DESC
+
+MANAGER_ID COUNT(MANAGER_ID)
+---------- -----------------
+       124                 4
+       149                 3
+
+2 rows selected.
+
+6)
+SELECT
+department_id "Dept#",
+MAX(hire_date) "Newest",
+MIN(hire_date) "Oldest"
+FROM employees
+WHERE department_id > 1 AND department_id NOT IN (10,20) AND hire_date < '01-JAN-00'
+GROUP BY department_id
+ORDER BY 2 DESC
+
+     Dept# Newest    Oldest
+---------- --------- ---------
+        50 16-NOV-99 17-OCT-95
+        60 07-FEB-99 03-JAN-90
+        80 24-MAR-98 11-MAY-96
+       110 07-JUN-94 07-JUN-94
+        90 13-JAN-93 17-JUN-87
+
+5 rows selected.
