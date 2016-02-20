@@ -1,0 +1,196 @@
+1)
+SELECT
+department_name,
+city,
+street_address,
+postal_code
+FROM departments
+JOIN locations
+USING(location_id)
+ORDER BY department_name DESC
+
+DEPARTMENT_NAME                CITY                           STREET_ADDRESS                           POSTAL_CODE
+------------------------------ ------------------------------ ---------------------------------------- ------------
+Shipping                       South San Francisco            2011 Interiors Blvd                      99236
+Sales                          Oxford                         Magdalen Centre, The Oxford Science Park OX9 9ZB
+Marketing                      Toronto                        147 Spadina Ave                          M5V 2L7
+IT                             Southlake                      2014 Jabberwocky Rd                      26192
+Executive                      Seattle                        2004 Charade Rd                          98199
+Contracting                    Seattle                        2004 Charade Rd                          98199
+Administration                 Seattle                        2004 Charade Rd                          98199
+Accounting                     Seattle                        2004 Charade Rd                          98199
+
+8 Rows selected.
+
+2)
+SELECT
+first_name || '/' || last_name AS "Name",
+hire_date "Hire date",
+salary "Salary"
+FROM employees e
+JOIN departments d
+ON e.department_id = d.department_id
+WHERE department_name LIKE 'A%' OR department_name LIKE 'S%'
+ORDER BY department_name
+
+Name                                           Hire date     Salary
+---------------------------------------------- --------- ----------
+Shelley/Higgins                                07-JUN-94      12000
+William/Gietz                                  07-JUN-94       8300
+Jennifer/Whalen                                17-SEP-87       4400
+Eleni/Zlotkey                                  29-JAN-00      10500
+Jonathon/Taylor                                24-MAR-98       8600
+Ellen/Abel                                     11-MAY-96      11000
+Trenna/Rajs                                    17-OCT-95       3500
+Kevin/Mourgos                                  16-NOV-99       5800
+Curtis/Davies                                  29-JAN-97       3100
+Peter/Vargas                                   09-JUL-98       2500
+Randall/Matos                                  15-MAR-98       2600
+
+11 rows selected.
+
+3)
+SELECT
+first_name || '/' || last_name AS "Name",
+hire_date "Hire date",
+salary "Salary"
+FROM employees e, departments d
+WHERE e.department_id = d.department_id
+AND (department_name LIKE 'A%' OR department_name LIKE 'S%')
+ORDER BY department_name
+
+Name                                           Hire date     Salary
+---------------------------------------------- --------- ----------
+Shelley/Higgins                                07-JUN-94      12000
+William/Gietz                                  07-JUN-94       8300
+Jennifer/Whalen                                17-SEP-87       4400
+Eleni/Zlotkey                                  29-JAN-00      10500
+Jonathon/Taylor                                24-MAR-98       8600
+Ellen/Abel                                     11-MAY-96      11000
+Trenna/Rajs                                    17-OCT-95       3500
+Kevin/Mourgos                                  16-NOV-99       5800
+Curtis/Davies                                  29-JAN-97       3100
+Peter/Vargas                                   09-JUL-98       2500
+Randall/Matos                                  15-MAR-98       2600
+
+11 rows selected.
+
+4)
+SELECT
+last_name || ', ' || first_name "Name",
+department_name,
+city,
+postal_code,
+state_province
+FROM employees e
+JOIN departments d
+ON e.employee_id = d.manager_id
+JOIN locations l
+ON d.location_id = l.location_id
+WHERE
+UPPER(state_province) IN('ONTARIO','CALIFORNIA','WASHINGTON')
+ORDER BY city, department_name
+
+Name                                            DEPARTMENT_NAME                CITY                        POSTAL_CODE  STATE_PROVINCE
+----------------------------------------------- ------------------------------ ------------------------------ ------------ -----------
+Whalen, Jennifer                                Administration                 Seattle                     98199           Washington
+Hartstein, Michael                              Marketing                      Toronto                     M5V 2L7         Ontario
+Mourgos, Kevin                                  Shipping                       South San Francisco         99236           California
+King, Steven                                    Executive                      Seattle                     98199           Washington
+Higgins, Shelley                                Accounting                     Seattle                     98199           Washington
+
+5 rows selected.
+
+5)
+SELECT
+last_name || ', ' || first_name "Name",
+department_name,
+city,
+postal_code,
+state_province
+FROM employees e, locations l, departments d
+WHERE
+(e.employee_id = d.manager_id AND d.location_id = l.location_id)
+AND
+UPPER(state_province) IN('ONTARIO','CALIFORNIA','WASHINGTON')
+
+Name                                            DEPARTMENT_NAME                CITY                        POSTAL_CODE  STATE_PROVINCE
+----------------------------------------------- ------------------------------ ------------------------------ ------------ -----------
+Whalen, Jennifer                                Administration                 Seattle                     98199           Washington
+Hartstein, Michael                              Marketing                      Toronto                     M5V 2L7         Ontario
+Mourgos, Kevin                                  Shipping                       South San Francisco         99236           California
+King, Steven                                    Executive                      Seattle                     98199           Washington
+Higgins, Shelley                                Accounting                     Seattle                     98199           Washington
+
+5 rows selected.
+
+6)
+SELECT
+department_name "Dept",
+MAX(salary) "High",
+MIN(salary) "Low",
+ROUND(Avg(salary)) "Average"
+FROM employees e
+JOIN departments d
+ON e.department_id = d.department_id
+GROUP BY department_name
+ORDER BY 4 DESC
+
+Dept                                 High        Low    Average
+------------------------------ ---------- ---------- ----------
+Executive                           24000      17000      19333
+Accounting                          12000       8300      10150
+Sales                               11000       8600      10033
+Marketing                           13000       6000       9500
+IT                                   9000       4200       6400
+Administration                       4400       4400       4400
+Shipping                             5800       2500       3500
+
+7 rows selected.
+
+7)
+SELECT
+e.last_name "Employee",
+e.employee_id "Emp#",
+m.last_name "Manager",
+m.employee_id "Mgr#"
+FROM employees e
+FULL OUTER JOIN employees m
+ON m.employee_id = e.manager_id
+
+Employee                        Emp# Manager                         Mgr#
+------------------------- ---------- ------------------------- ----------
+                                     Abel                             174
+                                     Davies                           142
+Hunold                           103 De Haan                          102
+                                     Ernst                            104
+                                     Fay                              202
+                                     Gietz                            206
+                                     Grant                            178
+Fay                              202 Hartstein                        201
+Gietz                            206 Higgins                          205
+Lorentz                          107 Hunold                           103
+Ernst                            104 Hunold                           103
+Hartstein                        201 King                             100
+Zlotkey                          149 King                             100
+Mourgos                          124 King                             100
+De Haan                          102 King                             100
+Kochhar                          101 King                             100
+Higgins                          205 Kochhar                          101
+Whalen                           200 Kochhar                          101
+                                     Lorentz                          107
+                                     Matos                            143
+Vargas                           144 Mourgos                          124
+Matos                            143 Mourgos                          124
+Davies                           142 Mourgos                          124
+Rajs                             141 Mourgos                          124
+                                     Rajs                             141
+                                     Taylor                           176
+                                     Vargas                           144
+                                     Whalen                           200
+Grant                            178 Zlotkey                          149
+Taylor                           176 Zlotkey                          149
+Abel                             174 Zlotkey                          149
+King                             100
+
+32 rows selected.

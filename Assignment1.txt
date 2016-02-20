@@ -1,0 +1,8 @@
+1)
+SELECT
+employee_id "Emp#",
+last_name || ', ' || first_name "Full Name",
+job_id "Job",
+to_char(hire_date,'fmDdpth "Of" Month') "Hire Date"
+FROM employees
+ORDER BY hire_date DESC
