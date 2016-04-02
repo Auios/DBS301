@@ -1,0 +1,162 @@
+1)
+SELECT
+last_name,
+job_id
+FROM employees
+WHERE job_id = (
+SELECT
+job_id
+FROM employees
+WHERE UPPER(last_name) = 'DAVIES'
+)
+AND UPPER(last_name) != 'DAVIES'
+
+LAST_NAME                 JOB_ID
+------------------------- ----------
+Rajs                      ST_CLERK
+Matos                     ST_CLERK
+Vargas                    ST_CLERK
+
+3 rows selected.
+
+2)
+SELECT
+last_name,
+job_id,
+hire_date
+FROM employees
+WHERE hire_date > (
+SELECT
+hire_date
+FROM employees
+WHERE UPPER(last_name) = 'GRANT'
+)
+
+LAST_NAME                 JOB_ID     HIRE_DATE
+------------------------- ---------- ---------
+Zlotkey                   SA_MAN     29-JAN-00
+Mourgos                   ST_MAN     16-NOV-99
+
+2 rows selected.
+
+3)
+SELECT
+city,
+NVL(to_char(state_province),'Unknown') "Province",
+postal_code
+FROM locations
+WHERE
+country_id IN (
+SELECT country_id
+FROM countries
+WHERE UPPER(country_name) LIKE 'I%'
+)
+ORDER BY city ASC
+
+CITY                           Province                  POSTAL_CODE
+------------------------------ ------------------------- ------------
+Bombay                         Maharashtra               490231
+Roma                           Unknown                   00989
+Venice                         Unknown                   10934
+
+3 rows selected.
+
+4)
+SELECT
+last_name,
+job_id,
+salary
+FROM employees
+WHERE salary < (
+SELECT AVG(salary)
+FROM employees
+WHERE department_id = (
+SELECT department_id FROM departments
+WHERE UPPER(department_name) = 'SALES'
+))
+ORDER BY salary DESC, job_id
+
+LAST_NAME                 JOB_ID         SALARY
+------------------------- ---------- ----------
+Hunold                    IT_PROG          9000
+Taylor                    SA_REP           8600
+Gietz                     AC_ACCOUNT       8300
+Grant                     SA_REP           7000
+Ernst                     IT_PROG          6000
+Fay                       MK_REP           6000
+Mourgos                   ST_MAN           5800
+Whalen                    AD_ASST          4400
+Lorentz                   IT_PROG          4200
+Rajs                      ST_CLERK         3500
+Davies                    ST_CLERK         3100
+Matos                     ST_CLERK         2600
+Vargas                    ST_CLERK         2500
+
+13 rows selected.
+
+5)
+SELECT
+last_name,
+job_id,
+salary
+FROM employees
+WHERE salary < (
+SELECT
+AVG(salary)
+FROM employees
+WHERE department_id = (
+SELECT department_id
+FROM departments
+WHERE UPPER(department_name) = 'IT'
+))
+ORDER BY salary ASC, last_name
+
+LAST_NAME                 JOB_ID         SALARY
+------------------------- ---------- ----------
+Vargas                    ST_CLERK         2500
+Matos                     ST_CLERK         2600
+Davies                    ST_CLERK         3100
+Rajs                      ST_CLERK         3500
+Lorentz                   IT_PROG          4200
+Whalen                    AD_ASST          4400
+Mourgos                   ST_MAN           5800
+Ernst                     IT_PROG          6000
+Fay                       MK_REP           6000
+
+9 rows selected.
+
+6)
+SELECT
+last_name,
+salary
+FROM employees
+WHERE
+salary < ANY(
+SELECT
+MIN(salary)
+FROM employees
+GROUP BY department_id
+)
+ORDER BY salary DESC, last_name
+
+LAST_NAME                     SALARY
+------------------------- ----------
+Hartstein                      13000
+Higgins                        12000
+Abel                           11000
+Zlotkey                        10500
+Hunold                          9000
+Taylor                          8600
+Gietz                           8300
+Grant                           7000
+Ernst                           6000
+Fay                             6000
+Mourgos                         5800
+Whalen                          4400
+Lorentz                         4200
+Rajs                            3500
+Davies                          3100
+Matos                           2600
+Vargas                          2500
+
+17 rows selected.

@@ -1,0 +1,135 @@
+CREATE TABLE my_employee(
+ID NUMBER(4) NOT NULL,
+Last_Name VARCHAR2(25),
+First_Name VARCHAR2(25),
+User_ID VARCHAR2(8),
+Salary NUMBER(9,2))
+
+1)
+INSERT ALL
+INTO My_Employee VALUES(126,'Popov','Olga','opopov',8500)
+INTO My_Employee VALUES(127,'Chen','Ling','lcheng',14500)
+INTO My_Employee VALUES(128,'Dunn','David','ddunn',NULL)
+SELECT 1 FROM DUAL
+
+INSERT ALL
+INTO My_Employee(ID,Last_Name,First_Name,User_ID,Salary)
+VALUES(108,'Preston','Scott','spreston',NULL)
+INTO My_Employee(ID,Last_Name,First_Name,User_ID,Salary)
+VALUES(109,'Gomez','Rita','rgomez',NULL)
+SELECT 1 FROM DUAL
+
+SELECT * FROM My_Employee
+        ID LAST_NAME                 FIRST_NAME                USER_ID      SALARY
+---------- ------------------------- ------------------------- -------- ----------
+       126 Popov                     Olga                      opopov         8500
+       127 Chen                      Ling                      lcheng        14500
+       128 Dunn                      David                     ddunn
+       108 Preston                   Scott                     spreston
+       109 Gomez                     Rita                      rgomez
+
+5 rows selected.
+
+COMMIT
+
+2)
+INSERT INTO My_Employee
+SELECT employee_id,last_name,first_name,'generic',salary
+FROM employees
+WHERE UPPER(job_id) LIKE '%PROG%'
+
+SELECT * FROM My_Employee
+        ID LAST_NAME                 FIRST_NAME                USER_ID      SALARY
+---------- ------------------------- ------------------------- -------- ----------
+       126 Popov                     Olga                      opopov         8500
+       127 Chen                      Ling                      lcheng        14500
+       128 Dunn                      David                     ddunn
+       108 Preston                   Scott                     spreston
+       109 Gomez                     Rita                      rgomez
+       103 Hunold                    Alexander                 generic        9000
+       104 Ernst                     Bruce                     generic        6000
+       107 Lorentz                   Diana                     generic        4200
+
+8 rows selected.
+
+ROLLBACK
+
+3)
+UPDATE My_Employee SET
+Last_Name='Jones',
+Salary=9000
+WHERE ID=109
+
+UPDATE My_Employee SET
+Salary=Salary+2000
+WHERE Salary < 10500
+
+SELECT * FROM My_Employee
+        ID LAST_NAME                 FIRST_NAME                USER_ID      SALARY
+---------- ------------------------- ------------------------- -------- ----------
+       126 Popov                     Olga                      opopov        10500
+       127 Chen                      Ling                      lcheng        14500
+       128 Dunn                      David                     ddunn
+       108 Preston                   Scott                     spreston
+       109 Jones                     Rita                      rgomez        11000
+
+5 rows selected.
+
+COMMIT
+
+4)
+INSERT INTO My_Employee VALUES(128,'Bob','Thomas',NULL,13500)
+
+DELETE FROM My_Employee
+WHERE Salary>(SELECT salary FROM employees
+WHERE UPPER(last_name) LIKE 'HIGGINS')
+
+SELECT * FROM My_Employee
+        ID LAST_NAME                 FIRST_NAME                USER_ID      SALARY
+---------- ------------------------- ------------------------- -------- ----------
+       126 Popov                     Olga                      opopov        10500
+       128 Dunn                      David                     ddunn
+       108 Preston                   Scott                     spreston
+       109 Jones                     Rita                      rgomez        11000
+
+4 rows selected.
+
+COMMIT
+
+5)
+UPDATE My_Employee SET
+Salary=Salary-1000
+WHERE Salary>(
+SELECT DISTINCT Salary FROM My_Employee
+WHERE UPPER(Last_Name) LIKE 'POPOV')
+
+SAVEPOINT TWO
+SELECT * FROM My_Employee
+        ID LAST_NAME                 FIRST_NAME                USER_ID      SALARY
+---------- ------------------------- ------------------------- -------- ----------
+       126 Popov                     Olga                      opopov        10500
+       128 Dunn                      David                     ddunn
+       108 Preston                   Scott                     spreston
+       109 Jones                     Rita                      rgomez        10000
+
+4 rows selected.
+
+DELETE FROM My_Employee
+WHERE ID > 120
+
+SELECT * FROM My_Employee
+        ID LAST_NAME                 FIRST_NAME                USER_ID      SALARY
+---------- ------------------------- ------------------------- -------- ----------
+       108 Preston                   Scott                     spreston
+       109 Jones                     Rita                      rgomez        10000
+
+2 rows selected.
+
+ROLLBACK TO TWO
+
+    ID LAST_NAME                 FIRST_NAME                USER_ID      SALARY
+------ ------------------------- ------------------------- -------- ----------
+   126 Popov                     Olga                      opopov        10500
+   128 Dunn                      David                     ddunn
+   108 Preston                   Scott                     spreston
+   109 Jones                     Rita                      rgomez        10000

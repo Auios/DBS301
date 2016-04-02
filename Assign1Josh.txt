@@ -1,0 +1,94 @@
+Assignment 1			DBS301C			
+______________________________________________
+
+answer 1.
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  SELECT emp_no, ename || ', ' || fname "Full Name", job, TO_CHAR(ROUND(TO_DATE (hiredate), 'MONTH'), 'Month Ddspth " of " yyyy') "Start Date"
+  2  FROM employee
+  3  WHERE TO_CHAR(hiredate, 'MM') = '01'
+  4* ORDER BY hiredate desc
+SQL> /
+
+    EMP_NO Full Name                                  JOB             Start Date                                        
+---------- ------------------------------------------ --------------- ----------------------------------                
+       106 Ramirez, Maria                             Developer       January   First  of  1983                         
+       114 Miller, Scott                              Clerk           February  First  of  1982                         
+
+SQL> spool stop
+
+answer 2.
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  SELECT 'Employee#' || emp_no || ' named ' || fname || ' ' || ename || ' who is ' || job || ' will have a new salary of' || TO_CHAR(ROUND((sal * 1.25), -2), '$000,000') "Employees with higher salary"
+  2  FROM employee
+  3  WHERE sal BETWEEN 3000 AND 5000
+  4  AND job IN ('Developer', 'Manager')
+  5* ORDER BY emp_no
+SQL> /
+
+Employees with higher salary                                                                                            
+------------------------------------------------------------------------------------------------------------------------
+Employee#101 named Michael Cohen who is Developer will have a new salary of $004,000                                    
+Employee#107 named Anna Clark who is Manager will have a new salary of $006,100                                         
+Employee#110 named Ahmed Mohammed who is Developer will have a new salary of $003,800                                   
+
+SQL> spool stop
+
+answer 3.
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  SELECT emp_no, ename || ', ' || fname AS "Full Name", SUBSTR(ename, -4) "Last", locn "Location"
+  2  FROM employee
+  3  JOIN department
+  4  USING (dept_no)
+  5  WHERE (ename LIKE '%e'
+  6  OR ename LIKE '%o%')
+  7  AND (ename LIKE 'M%'
+  8  OR fname LIKE 'M%')
+  9  AND LENGTH(ename || ', ' || fname) < 15
+ 10  AND locn = 'Toronto'
+ 11* ORDER BY "Full Name"
+SQL> /
+
+    EMP_NO Full Name                                  Last Location                                                     
+---------- ------------------------------------------ ---- ---------------                                              
+       101 Cohen, Michael                             ohen Toronto                                                      
+
+answer 4.
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  SELECT ename, fname, sal, job,
+  2  CASE
+  3  	WHEN mgr IS NULL THEN 'NONE'
+  4  	ELSE TO_CHAR(mgr)
+  5  END AS "Manager#", 
+  6  TO_CHAR(((sal * 12) + (NVL(comm, 0) * 12) + 3000), '$000,000.0') AS "Total Pay"
+  7  FROM employee
+  8  WHERE (comm IS NULL
+  9  OR job = 'Analyst')
+ 10  AND ((sal * 12) + (NVL(comm, 0) * 12) + 3000) > 120000
+ 11* ORDER BY sal DESC
+SQL> /
+
+ENAME                FNAME                       SAL JOB             Manager#                                           
+-------------------- -------------------- ---------- --------------- ----------------------------------------           
+Total Pay                                                                                                               
+-----------                                                                                                             
+Ford                 James                     46000 Analyst         107                                                
+ $564,000.0                                                                                                             
+                                                                                                                        
+Scott                Peter                     45000 Analyst         107                                                
+ $549,000.0                                                                                                             
+                                                                                                                        
+King                 James                     10000 President       NONE                                               
+ $123,000.0                                                                                                             
+                                                                                                                        

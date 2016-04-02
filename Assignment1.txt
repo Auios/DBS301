@@ -1,8 +1,88 @@
 1)
 SELECT
-employee_id "Emp#",
-last_name || ', ' || first_name "Full Name",
-job_id "Job",
-to_char(hire_date,'fmDdpth "Of" Month') "Hire Date"
-FROM employees
-ORDER BY hire_date DESC
+emp_no "Emp#",
+ename || ', ' || fname "Full Name",
+job "Job",
+TO_CHAR(ROUND(TO_DATE(hiredate), 'MONTH'), 'Month Ddspth " of " yyyy') "Start Date"
+FROM employee
+WHERE TO_CHAR(hiredate, 'MM') = '01'
+ORDER BY hiredate DESC
+
+    EMP_NO Full Name                                  Job             Start Date                                        
+---------- ------------------------------------------ --------------- ----------------------------------                
+       106 Ramirez, Maria                             Developer       January   First  of  1983                         
+       114 Miller, Scott                              Clerk           February  First  of  1982                         
+
+2 rows selected.
+
+2)
+SELECT
+'Employee# ' || emp_no ||
+' named ' || ename || ', ' || fname ||
+' who is ' || job || ' will have a new salary of ' ||
+TO_CHAR(ROUND((sal * 1.25), -2), '$000,000') "Employees with higher salary"
+FROM employee
+WHERE sal BETWEEN 3000 AND 5000
+AND UPPER(job) IN ('DEVELOPER', 'MANAGER')
+ORDER BY emp_no ASC
+
+Employees with higher salary
+----------------------------------------------------------------------------------------
+
+Employee# 101 named Cohen, Michael who is Developer will have a new salary of  $004,000
+Employee# 107 named Clark, Anna who is Manager will have a new salary of  $006,100
+Employee# 110 named Mohammed, Ahmed who is Developer will have a new salary of  $003,800
+
+3 rows selected.
+
+3)
+SELECT
+emp_no, ename || ', ' || fname "Full Name",
+SUBSTR(ename, -4) "Last",
+locn "Location"
+FROM employee
+JOIN department
+USING (dept_no)
+WHERE
+(UPPER(ename) LIKE '%E%' OR UPPER(ename) LIKE '%O%')
+AND
+(UPPER(ename) LIKE 'M%' OR UPPER(fname) LIKE 'M%')
+AND
+LENGTH(ename || ', ' || fname) < 15
+AND UPPER(locn) = 'TORONTO'
+ORDER BY 1
+
+    EMP_NO Full Name                                  Last Location
+---------- ------------------------------------------ ---- ---------------
+       101 Cohen, Michael                             ohen Toronto
+       114 Miller, Scott                              ller TORONTO
+
+2 rows selected.
+
+4)
+SELECT
+ename,
+fname,
+sal,
+job,
+CASE
+WHEN mgr IS NULL THEN 'NONE'
+ELSE TO_CHAR(mgr)
+END AS "Manager#",
+TO_CHAR(((sal * 12) + (NVL(comm, 0) * 12) + 3000), '$000,000.0') "Total Pay"
+FROM employee
+WHERE
+(comm IS NULL OR UPPER(job)='ANALYST')
+AND
+((sal * 12) + (NVL(comm, 0) * 12) + 3000) > 120000
+ORDER BY sal DESC
+
+ENAME                FNAME                       SAL JOB             Manager#                              Total Pay
+-------------------- -------------------- ---------- --------------- ---------------------------------------- -----------
+Ford                 James                     46000 Analyst         107                                    $564,000.0
+Scott                Peter                     45000 Analyst         107                                    $549,000.0
+King                 James                     10000 President       NONE                                   $123,000.0
+
+3 rows selected.
+
+5)

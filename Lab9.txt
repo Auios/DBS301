@@ -1,0 +1,47 @@
+1)
+CREATE TABLE salesrep(
+repID NUMBER(6),
+fName VARCHAR2(20),
+lName VARCHAR2(25),
+phone# VARCHAR2(20),
+salary NUMBER(8,2),
+commision NUMBER(2,2))
+
+INSERT INTO salesrep
+SELECT
+employee_id,
+first_name,
+last_name,
+phone_number,
+salary,
+commission_pct
+FROM employees
+WHERE department_id=80
+
+2)
+CREATE TABLE goodcust(
+custID NUMBER(6),
+name VARCHAR2(30),
+location VARCHAR2(30),
+repID NUMBER(7))
+
+INSERT INTO goodcust
+SELECT
+cust#,
+custname,
+city,
+salesrep#
+FROM cust
+WHERE rating IN('A','B')
+
+3)
+ALTER TABLE salesrep ADD jobCode VARCHAR2(12)
+
+4)
+ALTER TABLE salesrep MODIFY(salary NOT NULL)
+ALTER TABLE goodcust MODIFY(location NULL)
+
+5)
+ALTER TABLE goodcust
+MODIFY(name VARCHAR2(
+SELECT MAX(LENGTH(name)) FROM goodcust)

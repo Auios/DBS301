@@ -1,0 +1,35 @@
+1)
+CREATE TABLE client(
+client_id NUMBER(5) CONSTRAINT cclient_id_pk PRIMARY KEY,
+client_name VARCHAR2(20) NOT NULL CONSTRAINT client_name_uk UNIQUE,
+client_address VARCHAR2(30),
+client_city VARCHAR(10) NOT NULL,
+client_prov CHAR(2) NOT NULL,
+client_postal CHAR(6))
+
+2)
+CREATE TABLE prog(
+prog_id NUMBER(5) CONSTRAINT prog_id_pk PRIMARY KEY,
+prog_name VARCHAR2(30) NOT NULL,
+prog_office CHAR(4) NOT NULL,
+prog_phone CHAR(10))
+
+3)
+CREATE TABLE project(
+project_id NUMBER(6) CONSTRAINT project_id_pj PRIMARY KEY,
+proj_name VARCHAR2(40) NOT NULL CONSTRAINT proj_name_uk UNIQUE,
+complet_date DATE,
+total_cost NUMBER(8,2) CONSTRAINT total_cost_ck CHECK(total_cost > 0),
+client_id NUMBER(5) NOT NULL,
+CONSTRAINT client_id_fk FOREIGN KEY(client_id) REFERENCES client (client_id))
+
+4)
+CREATE TABLE project_staff(
+prog_id NUMBER(5),
+project_id NUMBER(6),
+week_year CHAR(5),
+hours_worked NUMBER(4,1) NOT NULL,
+CONSTRAINT prog_id_fk FOREIGN KEY(prog_id) REFERENCES prog(prog_id),
+CONSTRAINT project_id_fk FOREIGN KEY(project_id) REFERENCES project(project_id),
+CONSTRAINT project_staff_pk PRIMARY KEY(week_year, prog_id, project_id),
+CONSTRAINT hours_worked_ck CHECK(hours_worked > 0))
